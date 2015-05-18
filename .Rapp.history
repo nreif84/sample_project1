@@ -1,0 +1,65 @@
+var.plot = seq(0,4,by=0.2)#
+#
+power.est  = numeric(length(var.plot))#
+for (j in 1:length(var.plot)){#
+nsim  =  50#
+pval  = numeric(length(50))#
+sim1  =  function(b0=5,bSeedPred=2, bCompet=0 , bSPxC=0, Vsite=1.5, Vplot=1, Verror=2) {#
+	for (i in 1:nsim){#
+		   Site 		 =  factor(rep( 1:10, each=4))#
+		   Plot 		 =  factor(rep(c(1:20),each = 2))#
+		   Split		 =  factor(rep(1:2,20))#
+		   SeedPred	 =  rep(c('excluded','open'),each=2,10)#
+		   Compet	 =  rep(c('removed','intact'),20)	   #
+#
+		  site.re	= rnorm(n = Site, mean = 0, sd= Vsite)#
+		  plot.re	= rnorm(n = Plot, mean = 0, sd = Vplot)#
+		  tot.re 	= rnorm(10 * 2 * 2, mean = 0 , sd = Verror)#
+		   Recruitment  =  b0 + bSeedPred*(SeedPred=='excluded') + bCompet*(Compet=="removed")+#
+		    		   bSPxC*(SeedPred=='excluded'& Compet=='removed') + plot.re[Plot] + site.re[Site] + tot.re#
+		   mydata  =  data.frame(Site = paste('S',with = Site, sep =''), #
+		                         Plot = paste('P',with = Plot, sep =''), #
+		                         SeedPred = SeedPred,Compet= Compet,#
+		                         Recruitment = Recruitment)		   		#
+		            	fit1  =  lmer( Recruitment ~ SeedPred + (1|Site) + (1|Site/Plot),data=mydata, REML=FALSE)#
+		   		     fit2  =  lmer( Recruitment ~ (1|Site) + (1|Site/Plot), data=mydata,REML=FALSE)#
+			pval[i]  =  anova(fit1,fit2)[2,"Pr(>ChiSq"]#
+		}#
+	power.est[j]  =  sum(pval)/nsim#
+}
+)
+var.plot = seq(0,4,by=0.2)#
+#
+power.est  = numeric(length(var.plot))#
+for (j in 1:length(var.plot)){#
+nsim  =  50#
+pval  = numeric(length(50))#
+sim1  =  function(b0=5,bSeedPred=2, bCompet=0 , bSPxC=0, Vsite=1.5, Vplot=1, Verror=2) {#
+	for (i in 1:nsim){#
+		   Site 		 =  factor(rep( 1:10, each=4))#
+		   Plot 		 =  factor(rep(c(1:20),each = 2))#
+		   Split		 =  factor(rep(1:2,20))#
+		   SeedPred	 =  rep(c('excluded','open'),each=2,10)#
+		   Compet	 =  rep(c('removed','intact'),20)	   #
+#
+		  site.re	= rnorm(n = Site, mean = 0, sd= Vsite)#
+		  plot.re	= rnorm(n = Plot, mean = 0, sd = Vplot)#
+		  tot.re 	= rnorm(10 * 2 * 2, mean = 0 , sd = Verror)#
+		   Recruitment  =  b0 + bSeedPred*(SeedPred=='excluded') + bCompet*(Compet=="removed")+#
+		    		   bSPxC*(SeedPred=='excluded'& Compet=='removed') + plot.re[Plot] + site.re[Site] + tot.re#
+		   mydata  =  data.frame(Site = paste('S',with = Site, sep =''), #
+		                         Plot = paste('P',with = Plot, sep =''), #
+		                         SeedPred = SeedPred,Compet= Compet,#
+		                         Recruitment = Recruitment)		   		#
+		            	fit1  =  lmer( Recruitment ~ SeedPred + (1|Site) + (1|Site/Plot),data=mydata, REML=FALSE)#
+		   		     fit2  =  lmer( Recruitment ~ (1|Site) + (1|Site/Plot), data=mydata,REML=FALSE)#
+			pval[i]  =  anova(fit1,fit2)[2,"Pr(>ChiSq"]#
+		}#
+	power.est[j]  =  sum(pval)/nsim#
+}}
+sim1
+ls()
+power.est
+pval
+var.plot
+plot(x = 1:length(var.plot), y = var.plot)
